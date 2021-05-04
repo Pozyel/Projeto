@@ -7,7 +7,10 @@ import javax.persistence.Id;
 
 @Entity
 public class Game {
+	
 
+	public Game() {
+	}
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer idGame;
@@ -31,6 +34,13 @@ public class Game {
 	public void setPrice(Double price) {
 		this.price = price;
 	}
+	public Game(String name, Double price) {
+		super();
+		this.name = name;
+		this.price = price;
+	}
+	
+	
 	
 	
 }

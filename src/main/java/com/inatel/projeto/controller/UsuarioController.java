@@ -27,9 +27,5 @@ public class UsuarioController {
 		return"Salvo";
 	}
 	
-	@GetMapping(path="/all")
-	public @ResponseBody Iterable<Usuario> getAllUsers(){
-		
-		return usuariorepository.findAll();
-	}
+
 }

@@ -1,10 +1,19 @@
 package com.inatel.projeto.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
 
 import com.inatel.projeto.model.Game;
 
 
-public interface GameRepository extends CrudRepository<Game,Integer> {
+public interface GameRepository extends JpaRepository<Game,Integer> {
+
+	List<Game> findByName(String name);
+    
+
+
+	
 
 }

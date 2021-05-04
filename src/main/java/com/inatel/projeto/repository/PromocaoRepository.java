@@ -1,10 +1,19 @@
 package com.inatel.projeto.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
 
 import com.inatel.projeto.model.Promocao;
 
 
-public interface PromocaoRepository extends CrudRepository<Promocao,Integer> {
+public interface PromocaoRepository extends JpaRepository<Promocao,Integer> {
+
+	List<Promocao> findByNomegame(String nome);
+
+	
+
+	
 
 }

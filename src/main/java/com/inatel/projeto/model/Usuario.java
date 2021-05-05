@@ -14,23 +14,29 @@ public class Usuario {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Integer id;
+	private Integer idUsuario;
 	
 	
 	private String nome;
 	
-	private String senha;
-	
 	private String email;
 	
+	private String senha;
+	
+	
+	
 	
 
-	public Integer getId() {
-		return id;
+	public Usuario() {
+		
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public Integer getIdUsuario() {
+		return idUsuario;
+	}
+
+	public void setIdUsuario(Integer id) {
+		this.idUsuario = id;
 	}
 
 	public String getNome() {
@@ -54,6 +60,13 @@ public class Usuario {
 	}
 
 	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public Usuario(String nome, String senha, String email) {
+		super();
+		this.nome = nome;
+		this.senha = senha;
 		this.email = email;
 	}
 	

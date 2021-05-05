@@ -10,7 +10,8 @@ import com.inatel.projeto.model.Promocao;
 
 public interface PromocaoRepository extends JpaRepository<Promocao,Integer> {
 
-	List<Promocao> findByNomegame(String nome);
+	List<Promocao> findByGameName(String nome);
+	
 
 	
 

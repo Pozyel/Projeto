@@ -14,8 +14,8 @@ public class PromocaoDto {
 	
 	public PromocaoDto(Promocao promocao) {
 		
-		this.nome = promocao.getNomegame();
-		this.antigoPreco = promocao.getOld_price();
+		this.nome=promocao.getGame().getName();
+		this.antigoPreco = promocao.getGame().getPrice();
 		this.promocaoPreco = promocao.getNew_price();
 	}
 

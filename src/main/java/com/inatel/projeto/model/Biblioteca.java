@@ -1,36 +1,64 @@
 package com.inatel.projeto.model;
 
+
+
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
-@Entity
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+@Entity(name = "biblioteca")
 public class Biblioteca {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Integer id_biblioteca;
-	private Integer id_usuario;
-	private Integer id_games;
-	public Integer getIdUsuario() {
-		return id_usuario;
+	@ManyToOne
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Game game;
+	@ManyToOne
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private Usuario usuario;
+	
+	
+	
+	
+	
+	public Biblioteca() {
 	}
-	public void setIdUsuario(Integer idUsuario) {
-		this.id_usuario = idUsuario;
+	
+	public Biblioteca(Game game, Usuario usuario) {
+		this.game = game;
+		this.usuario = usuario;
 	}
-	public Integer getIdGames() {
-		return id_games;
+
+	public Game getGame() {
+		return game;
 	}
-	public void setIdGames(Integer idGames) {
-		this.id_games = idGames;
+	public void setGame(Game game) {
+		this.game = game;
 	}
-	public Integer getIdBiblioteca() {
+	public Usuario getUsuario() {
+		return usuario;
+	}
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
+	public Integer getId_biblioteca() {
 		return id_biblioteca;
 	}
-	public void setIdBiblioteca(Integer idBiblioteca) {
-		this.id_biblioteca = idBiblioteca;
+	public void setId_biblioteca(Integer id_biblioteca) {
+		this.id_biblioteca = id_biblioteca;
 	}
+
+	
+	
 	
 	
 	

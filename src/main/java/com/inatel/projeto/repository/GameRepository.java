@@ -11,6 +11,7 @@ import com.inatel.projeto.model.Game;
 public interface GameRepository extends JpaRepository<Game,Integer> {
 
 	List<Game> findByName(String name);
+	Game findByIdGame(Integer id);
     
 
 

@@ -1,7 +1,8 @@
 package com.inatel.projeto.controller.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
+
+
+import org.springframework.data.domain.Page;
 
 import com.inatel.projeto.model.Game;
 
@@ -42,9 +43,9 @@ public class GameDto {
 
 
 	
-	public static List<GameDto> converter(List<Game> games) {
+	public static Page<GameDto> converter(Page<Game> games) {
 		
-		return games.stream().map(GameDto::new).collect(Collectors.toList());
+		return games.map(GameDto::new);
 	}
 
 }

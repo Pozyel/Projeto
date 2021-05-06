@@ -1,7 +1,8 @@
 package com.inatel.projeto.controller.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
+
+
+import org.springframework.data.domain.Page;
 
 import com.inatel.projeto.model.Biblioteca;
 
@@ -28,8 +29,8 @@ public class BibliotecaDto {
 		return nomeUsuario;
 	}
 	
-public static List<BibliotecaDto> converter(List<Biblioteca> biblioteca) {
+public static Page<BibliotecaDto> converter(Page<Biblioteca> biblioteca) {
 		
-		return biblioteca.stream().map(BibliotecaDto::new).collect(Collectors.toList());
+		return biblioteca.map(BibliotecaDto::new);
 	}
 }

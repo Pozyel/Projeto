@@ -1,6 +1,7 @@
 package com.inatel.projeto.controller;
 
 import java.net.URI;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -38,14 +39,36 @@ public class UsuarioController {
 	@PutMapping("/{id}")
 	@Transactional
 	public ResponseEntity<UsuarioDto> atualizar(@PathVariable Integer id,@RequestBody UsuarioForm form){
-		Usuario usuario = form.atualizar(id,usuariorepository);
-		return ResponseEntity.ok(new UsuarioDto(usuario));
+		
+
+		Optional<Usuario> optional = usuariorepository.findById(id);
+		
+		if (optional.isPresent()) {
+		   Usuario usuario = form.atualizar(id,usuariorepository);
+		    return ResponseEntity.ok(new UsuarioDto(usuario));
+		
+			
+		}else {
+			
+			return ResponseEntity.notFound().build();
+		}
+		
 		
 	}
 	@DeleteMapping("/{id}")
 	@Transactional
 	public ResponseEntity<?> remover(@PathVariable Integer id){
+
+		Optional<Usuario> optional = usuariorepository.findById(id);
+		
+		if (optional.isPresent()) {
 		usuariorepository.deleteById(id);
 		return ResponseEntity.ok().build();
+			
+		}else {
+			
+			return ResponseEntity.notFound().build();
+		}
+		
 	}
 }

@@ -8,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+
 
 
 
@@ -25,26 +25,7 @@ public class Game {
 	private Integer idGame;
 	private String name;
 	private Double price;
-	@ManyToOne
-	private Promocao promocao;
-	@ManyToOne
-	private Biblioteca biblioteca;
-	
-	
-	
-	public Promocao getPromocao() {
-		return promocao;
-	}
-	public void setPromocao(Promocao promocao) {
-		this.promocao = promocao;
-	}
-	public Biblioteca getBiblioteca() {
-		return biblioteca;
-	}
-	public void setBiblioteca(Biblioteca biblioteca) {
-		this.biblioteca = biblioteca;
-	}
-	public Integer getIdGame() {
+		public Integer getIdGame() {
 		return idGame;
 	}
 	public void setIdGame(Integer idGame) {

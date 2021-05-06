@@ -3,11 +3,17 @@ package com.inatel.projeto.model;
 
 
 
+
+
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+
+
+
 
 
 
@@ -21,6 +27,7 @@ public class Promocao {
 	private Double new_price;
 	@ManyToOne
 	private Game game;
+		
 	
 	public Promocao() {
 	}

@@ -1,7 +1,8 @@
 package com.inatel.projeto.controller.dto;
 
-import java.util.List;
-import java.util.stream.Collectors;
+
+
+import org.springframework.data.domain.Page;
 
 import com.inatel.projeto.model.Promocao;
 
@@ -17,7 +18,7 @@ public class PromocaoDto {
 		this.nome=promocao.getGame().getName();
 		this.antigoPreco = promocao.getGame().getPrice();
 		this.promocaoPreco = promocao.getNew_price();
-	}
+		}
 
 	
 	
@@ -35,9 +36,9 @@ public class PromocaoDto {
 		return promocaoPreco;
 	}
 
-	public static List<PromocaoDto> converter(List<Promocao> promocoes) {
+	public static Page<PromocaoDto> converter(Page<Promocao> promocoes) {
 		
-		return promocoes.stream().map(PromocaoDto::new).collect(Collectors.toList());
+		return promocoes.map(PromocaoDto::new);
 	}
 	
 	

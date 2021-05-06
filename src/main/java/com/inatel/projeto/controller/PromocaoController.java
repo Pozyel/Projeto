@@ -1,11 +1,18 @@
 package com.inatel.projeto.controller;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 import com.inatel.projeto.controller.dto.PromocaoDto;
@@ -46,27 +54,55 @@ public class PromocaoController {
 		
 }
 	@GetMapping
-	public List<PromocaoDto> lista(String nome){
+	@Cacheable(value="listaDePromocoes")
+	public Page<PromocaoDto> lista(@RequestParam(required = false) String nome, @PageableDefault(sort = "GameName",direction = Direction.ASC, page = 0, size = 10) Pageable paginacao){
+		
 		if (nome == null) {
-			List<Promocao> promocoes =  promocaorepository.findAll();
+			Page<Promocao> promocoes =  promocaorepository.findAll(paginacao);
 			return PromocaoDto.converter(promocoes);
 		}else {
-			List<Promocao> promocoes =  promocaorepository.findByGameName(nome);
+			Page<Promocao> promocoes =  promocaorepository.findByGameName(nome,paginacao);
 			return PromocaoDto.converter(promocoes);
 			
 		}
 }
 	@PutMapping("/{id}")
 	@Transactional
+	@CacheEvict(value="listaDePromocoes",allEntries = true)
 	public ResponseEntity<PromocaoDto> atualizar(@PathVariable Integer id,@RequestBody AtualizaPromocaoForm form){
-		Promocao promocao = form.atualizar(id,promocaorepository);
-		return ResponseEntity.ok(new PromocaoDto(promocao));
+		
+		Optional<Promocao> optional = promocaorepository.findById(id);
+		
+		if (optional.isPresent()) {
+		   
+			Promocao promocao = form.atualizar(id,promocaorepository);
+			return ResponseEntity.ok(new PromocaoDto(promocao));
+		
+			
+		}else {
+			
+			return ResponseEntity.notFound().build();
+		}
+		
 		
 	}
 	@DeleteMapping("/{id}")
 	@Transactional
+	@CacheEvict(value="listaDePromocoes",allEntries = true)
 	public ResponseEntity<?> remover(@PathVariable Integer id){
-		promocaorepository.deleteById(id);
-		return ResponseEntity.ok().build();
+
+	    Optional<Promocao> optional = promocaorepository.findById(id);
+		
+		if (optional.isPresent()) {
+		   
+			promocaorepository.deleteById(id);
+			return ResponseEntity.ok().build();
+		
+			
+		}else {
+			
+			return ResponseEntity.notFound().build();
+		}
+		
 	}
 }

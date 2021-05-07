@@ -26,8 +26,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.inatel.projeto.controller.dto.DetalheAgeCivilizationDto;
 import com.inatel.projeto.controller.dto.GameDto;
 import com.inatel.projeto.controller.form.GameForm;
 import com.inatel.projeto.model.Game;
@@ -74,16 +76,25 @@ public class GameController {
 	
 	
 	@GetMapping("/{id}")
-    public ResponseEntity<GameDto> detalhar( @PathVariable Integer id) {
+    public ResponseEntity<String> detalhar( @PathVariable Integer id) {
 	
 		Optional<Game> game = gamerepository.findById(id);
+		RestTemplate restTemplate = new RestTemplate();
+		  String nome = "Age Of Empires 2";
+		  String nome2 = game.get().getName();
+		 
 	
-		if (game.isPresent()) {
-			return ResponseEntity.ok( new GameDto(game.get()));
+		
+		if (game.isPresent() && nome.equals(nome2) ) {
+		
+
+			ResponseEntity<String> detalhe =restTemplate.getForEntity("https://age-of-empires-2-api.herokuapp.com/api/v1/civilizations",String.class);
+			return detalhe;
 		}else {
 			
 			return ResponseEntity.notFound().build();
 		}
+		
 		
 		
 

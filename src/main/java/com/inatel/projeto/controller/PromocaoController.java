@@ -43,6 +43,8 @@ public class PromocaoController {
 	
 	
 	@PostMapping
+	@Transactional
+	@CacheEvict(value="listaDePromocoes",allEntries = true)
 	public ResponseEntity<PromocaoDto> adicionarPromocoes( @RequestBody PromocaoForm form, UriComponentsBuilder uriBuilder) {
 		Promocao promocao = form.converter(gamerepository);
 		promocaorepository.save(promocao);

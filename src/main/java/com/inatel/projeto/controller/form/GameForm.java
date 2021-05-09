@@ -2,6 +2,7 @@ package com.inatel.projeto.controller.form;
 
 import com.inatel.projeto.model.Game;
 import com.inatel.projeto.repository.GameRepository;
+import com.sun.istack.NotNull;
 
 public class GameForm {
 

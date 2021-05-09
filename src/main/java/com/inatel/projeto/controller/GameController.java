@@ -1,9 +1,5 @@
 package com.inatel.projeto.controller;
 
-
-
-
-
 import java.net.URI;
 import java.util.Optional;
 
@@ -29,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.inatel.projeto.controller.dto.DetalheAgeCivilizationDto;
 import com.inatel.projeto.controller.dto.GameDto;
 import com.inatel.projeto.controller.form.GameForm;
 import com.inatel.projeto.model.Game;
@@ -41,17 +36,13 @@ import com.inatel.projeto.repository.GameRepository;
 public class GameController {
 
 	@Autowired
-	private GameRepository gamerepository;
-	
-	
-	
-	
+	private GameRepository gameRepository;
 	@PostMapping
 	@Transactional
 	@CacheEvict(value="listaDeJogos",allEntries = true)
 	public  ResponseEntity<GameDto> adicionarNovoGame(@RequestBody GameForm form,  UriComponentsBuilder uriBuilder) {
 		Game game = form.converter();
-		gamerepository.save(game);
+		gameRepository.save(game);
 		URI uri = uriBuilder.path("/games/{id}").buildAndExpand(game.getIdGame()).toUri();
 		
 		return ResponseEntity.created(uri).body(new GameDto(game));
@@ -63,27 +54,25 @@ public class GameController {
 	public Page<GameDto> lista(@RequestParam(required = false) String name, @PageableDefault(sort = "Name",direction = Direction.ASC, page = 0, size = 10) Pageable paginacao){
 		
 		if (name == null) {
-			Page<Game> games =  gamerepository.findAll(paginacao);
+			Page<Game> games =  gameRepository.findAll(paginacao);
 			return GameDto.converter(games);
 		}else {
-			Page<Game> games =  gamerepository.findByName(name,paginacao);
+			Page<Game> games =  gameRepository.findByName(name,paginacao);
 			return GameDto.converter(games);
 			
 		}
 		
 		
-		}
+}
 	
 	
 	@GetMapping("/{id}")
     public ResponseEntity<String> detalhar( @PathVariable Integer id) {
 	
-		Optional<Game> game = gamerepository.findById(id);
+		Optional<Game> game = gameRepository.findById(id);
 		RestTemplate restTemplate = new RestTemplate();
-		  String nome = "Age Of Empires 2";
-		  String nome2 = game.get().getName();
-		 
-	
+		String nome = "Age Of Empires 2";
+	    String nome2 = game.get().getName();
 		
 		if (game.isPresent() && nome.equals(nome2) ) {
 		
@@ -105,10 +94,10 @@ public class GameController {
 	@CacheEvict(value="listaDeJogos",allEntries = true)
 	public ResponseEntity<GameDto> atualizar(@PathVariable Integer id,@RequestBody GameForm form){
 		
-		Optional<Game> optional = gamerepository.findById(id);
+		Optional<Game> optional = gameRepository.findById(id);
 		
 		if (optional.isPresent()) {
-			Game game = form.atualizar(id,gamerepository);
+			Game game = form.atualizar(id,gameRepository);
 		return ResponseEntity.ok(new GameDto(game));
 			
 		}else {
@@ -124,10 +113,10 @@ public class GameController {
 	@CacheEvict(value="listaDeJogos",allEntries = true)
 	public ResponseEntity<?> remover(@PathVariable Integer id){
          
-		Optional<Game> optional = gamerepository.findById(id);
+		Optional<Game> optional = gameRepository.findById(id);
 		
 		if (optional.isPresent()) {
-		    gamerepository.deleteById(id);
+		    gameRepository.deleteById(id);
 		    return ResponseEntity.ok().build();
 			
 		}else {

@@ -24,10 +24,16 @@ import com.inatel.projeto.repository.UsuarioRepository;
 @RequestMapping(path="/usuarios")
 public class UsuarioController {
 
-	@Autowired
 	private UsuarioRepository usuariorepository;
+		
+	@Autowired
+	public UsuarioController(UsuarioRepository usuariorepository) {
+				this.usuariorepository = usuariorepository;
+	}
+
+	
 	@PostMapping
-	public ResponseEntity<UsuarioDto> adicionarNovoUsuario(@RequestBody  UsuarioForm form,UriComponentsBuilder uriBuilder ) {
+	public ResponseEntity<UsuarioDto> adicionarNovoUsuario(@RequestBody  UsuarioForm form, UriComponentsBuilder uriBuilder ) {
 		Usuario usuario = form.converter();
 		
 		URI uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getIdUsuario()).toUri();

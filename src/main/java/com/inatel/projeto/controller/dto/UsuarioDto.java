@@ -11,9 +11,8 @@ public class UsuarioDto {
 	}
 
 	public UsuarioDto(Usuario usuario) {
-		
+
 		this.nome = usuario.getNome();
 	}
-	
-	
+
 }

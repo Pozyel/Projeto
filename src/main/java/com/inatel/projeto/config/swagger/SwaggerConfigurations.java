@@ -19,25 +19,12 @@ public class SwaggerConfigurations {
 
 	@Bean
 	public Docket lojaAPI() {
-		
-		 return new Docket(DocumentationType.SWAGGER_2)
-			 .select()
-             .apis(RequestHandlerSelectors.basePackage("com.inatel.projeto"))
-             .paths(PathSelectors.ant("/**"))
-             .build()
-             .ignoredParameterTypes(Usuario.class)
-             .globalOperationParameters(
-                     Arrays.asList(
-                             new ParameterBuilder()
-                                 .name("Authorization")
-                                 .description("Header para Token JWT")
-                                 .modelRef(new ModelRef("string"))
-                                 .parameterType("header")
-                                 .required(false)
-                                 .build()));
-		  
 
-		
-		
+		return new Docket(DocumentationType.SWAGGER_2).select()
+				.apis(RequestHandlerSelectors.basePackage("com.inatel.projeto")).paths(PathSelectors.ant("/**")).build()
+				.ignoredParameterTypes(Usuario.class).globalOperationParameters(
+						Arrays.asList(new ParameterBuilder().name("Authorization").description("Header para Token JWT")
+								.modelRef(new ModelRef("string")).parameterType("header").required(false).build()));
+
 	}
 }

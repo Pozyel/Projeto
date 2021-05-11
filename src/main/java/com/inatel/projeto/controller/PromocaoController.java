@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,79 +33,83 @@ import com.inatel.projeto.repository.GameRepository;
 import com.inatel.projeto.repository.PromocaoRepository;
 
 @RestController
-@RequestMapping(path="/promocoes")
+@RequestMapping(path = "/promocoes")
 public class PromocaoController {
 
 	@Autowired
-	private PromocaoRepository promocaorepository;
+	private PromocaoRepository promocaoRepository;
 	@Autowired
 	private GameRepository gamerepository;
-	
-	
-	
+
 	@PostMapping
 	@Transactional
-	@CacheEvict(value="listaDePromocoes",allEntries = true)
-	public ResponseEntity<PromocaoDto> adicionarPromocoes( @RequestBody PromocaoForm form, UriComponentsBuilder uriBuilder) {
+	@CacheEvict(value = "listaDePromocoes", allEntries = true)
+	public ResponseEntity<PromocaoDto> adicionarPromocoes(@RequestBody @Valid PromocaoForm form,
+			UriComponentsBuilder uriBuilder) {
 		Promocao promocao = form.converter(gamerepository);
-		promocaorepository.save(promocao);
-		
-		URI uri = uriBuilder.path("/promocoes/{id}").buildAndExpand(promocao.getIdSale()).toUri();
-		return ResponseEntity.created(uri).body(new PromocaoDto(promocao));
-		
-		
-		
-}
-	@GetMapping
-	@Cacheable(value="listaDePromocoes")
-	public Page<PromocaoDto> lista(@RequestParam(required = false) String nome, @PageableDefault(sort = "GameName",direction = Direction.ASC, page = 0, size = 10) Pageable paginacao){
-		
-		if (nome == null) {
-			Page<Promocao> promocoes =  promocaorepository.findAll(paginacao);
-			return PromocaoDto.converter(promocoes);
-		}else {
-			Page<Promocao> promocoes =  promocaorepository.findByGameName(nome,paginacao);
-			return PromocaoDto.converter(promocoes);
-			
+		boolean verificaPromocao = form.verificaGamePromocao(promocaoRepository);
+		if (verificaPromocao == true) {
+			promocaoRepository.save(promocao);
+
+			URI uri = uriBuilder.path("/promocoes/{id}").buildAndExpand(promocao.getIdSale()).toUri();
+			return ResponseEntity.created(uri).body(new PromocaoDto(promocao));
 		}
-}
+
+		return ResponseEntity.badRequest().build();
+
+	}
+
+	@GetMapping
+	@Cacheable(value = "listaDePromocoes")
+	public Page<PromocaoDto> lista(@RequestParam(required = false) String nome,
+			@PageableDefault(sort = "GameName", direction = Direction.ASC, page = 0, size = 10) Pageable paginacao) {
+
+		if (nome == null) {
+			Page<Promocao> promocoes = promocaoRepository.findAll(paginacao);
+			return PromocaoDto.converter(promocoes);
+		} else {
+			Page<Promocao> promocoes = promocaoRepository.findByGameName(nome, paginacao);
+			return PromocaoDto.converter(promocoes);
+
+		}
+	}
+
 	@PutMapping("/{id}")
 	@Transactional
-	@CacheEvict(value="listaDePromocoes",allEntries = true)
-	public ResponseEntity<PromocaoDto> atualizar(@PathVariable Integer id,@RequestBody AtualizaPromocaoForm form){
-		
-		Optional<Promocao> optional = promocaorepository.findById(id);
-		
+	@CacheEvict(value = "listaDePromocoes", allEntries = true)
+	public ResponseEntity<PromocaoDto> atualizar(@PathVariable Integer id,
+			@RequestBody @Valid AtualizaPromocaoForm form) {
+
+		Optional<Promocao> optional = promocaoRepository.findById(id);
+
 		if (optional.isPresent()) {
-		   
-			Promocao promocao = form.atualizar(id,promocaorepository);
+
+			Promocao promocao = form.atualizar(id, promocaoRepository);
 			return ResponseEntity.ok(new PromocaoDto(promocao));
-		
-			
-		}else {
-			
+
+		} else {
+
 			return ResponseEntity.notFound().build();
 		}
-		
-		
+
 	}
+
 	@DeleteMapping("/{id}")
 	@Transactional
-	@CacheEvict(value="listaDePromocoes",allEntries = true)
-	public ResponseEntity<?> remover(@PathVariable Integer id){
+	@CacheEvict(value = "listaDePromocoes", allEntries = true)
+	public ResponseEntity<?> remover(@PathVariable Integer id) {
 
-	    Optional<Promocao> optional = promocaorepository.findById(id);
-		
+		Optional<Promocao> optional = promocaoRepository.findById(id);
+
 		if (optional.isPresent()) {
-		   
-			promocaorepository.deleteById(id);
+
+			promocaoRepository.deleteById(id);
 			return ResponseEntity.ok().build();
-		
-			
-		}else {
-			
+
+		} else {
+
 			return ResponseEntity.notFound().build();
 		}
-		
+
 	}
 }

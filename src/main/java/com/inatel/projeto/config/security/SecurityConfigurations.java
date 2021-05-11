@@ -3,6 +3,7 @@ package com.inatel.projeto.config.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,8 +19,9 @@ import com.inatel.projeto.repository.UsuarioRepository;
 
 @EnableWebSecurity
 @Configuration
+@Profile("prod")
 public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
-	
+
 	@Autowired
 	private AutenticacaoService autenticacaoService;
 	@Autowired
@@ -29,39 +31,44 @@ public class SecurityConfigurations extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-	
+
 		auth.userDetailsService(autenticacaoService).passwordEncoder(new BCryptPasswordEncoder());
 	}
-	
+
 	@Override
 	@Bean
 	protected AuthenticationManager authenticationManager() throws Exception {
-		
+
 		return super.authenticationManager();
 	}
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-	
+
 		http.authorizeRequests()
-		.antMatchers(HttpMethod.GET, "/games").permitAll()
-		.antMatchers(HttpMethod.GET, "/games/*").permitAll()
-		.antMatchers(HttpMethod.GET,"/promocoes").permitAll()
-		.antMatchers(HttpMethod.GET,"/promocoes/*").permitAll()
-		.antMatchers(HttpMethod.POST,"/auth").permitAll()
-		.anyRequest().authenticated()
-		.and().csrf().disable()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and().addFilterBefore(new AutenticacaoViaTokenFilter(tokenService,repository), UsernamePasswordAuthenticationFilter.class);
-			}
+		        .antMatchers(HttpMethod.GET, "/games").permitAll()
+				.antMatchers(HttpMethod.GET, "/games/*").permitAll()
+				.antMatchers(HttpMethod.GET, "/promocoes").permitAll()
+				.antMatchers(HttpMethod.GET, "/promocoes/*").permitAll()
+				.antMatchers(HttpMethod.POST, "/auth").permitAll()
+				.antMatchers(HttpMethod.POST, "/usuarios").permitAll()
+				.antMatchers(HttpMethod.POST, "/games").hasRole("ADMIN")
+				.antMatchers(HttpMethod.POST, "/promocoes").hasRole("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/games").hasRole("ADMIN")
+				.antMatchers(HttpMethod.PUT, "/promocoes").hasRole("ADMIN")
+				.antMatchers(HttpMethod.DELETE, "/games").hasRole("ADMIN")
+				.antMatchers(HttpMethod.DELETE, "/promocoes").hasRole("ADMIN")
+				.anyRequest().authenticated().and().csrf().disable()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+				.addFilterBefore(new AutenticacaoViaTokenFilter(tokenService, repository),
+						UsernamePasswordAuthenticationFilter.class);
+	}
+
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-	        web.ignoring().antMatchers("/**.html", 
-	        		                   "/v2/api-docs", 
-	        		                   "/webjars/**", 
-	        		                   "/configuration/**", 
-	        		                   "/swagger-resources/**");
-	
-		
+		web.ignoring().antMatchers("/**.html", "/v2/api-docs", "/webjars/**", "/configuration/**",
+				"/swagger-resources/**");
+
 	}
-	
-}	
+
+}

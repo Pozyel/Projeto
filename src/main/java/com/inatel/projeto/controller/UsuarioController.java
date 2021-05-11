@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,60 +22,63 @@ import com.inatel.projeto.model.Usuario;
 import com.inatel.projeto.repository.UsuarioRepository;
 
 @RestController
-@RequestMapping(path="/usuarios")
+@RequestMapping(path = "/usuarios")
 public class UsuarioController {
 
-	private UsuarioRepository usuariorepository;
-		
+	private UsuarioRepository usuarioRepository;
+	
+
 	@Autowired
 	public UsuarioController(UsuarioRepository usuariorepository) {
-				this.usuariorepository = usuariorepository;
+		this.usuarioRepository = usuariorepository;
+		
 	}
 
-	
 	@PostMapping
-	public ResponseEntity<UsuarioDto> adicionarNovoUsuario(@RequestBody  UsuarioForm form, UriComponentsBuilder uriBuilder ) {
+	public ResponseEntity<UsuarioDto> adicionarNovoUsuario(@RequestBody @Valid UsuarioForm form,
+			UriComponentsBuilder uriBuilder) {
 		Usuario usuario = form.converter();
-		
-		URI uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getIdUsuario()).toUri();
-		usuariorepository.save(usuario);
-		return ResponseEntity.created(uri).body(new UsuarioDto(usuario));
+		boolean verificaUsuario = form.verificaUsuarioExiste(usuarioRepository);
+		if (verificaUsuario == true) {
+			URI uri = uriBuilder.path("/usuarios/{id}").buildAndExpand(usuario.getIdUsuario()).toUri();
+			usuarioRepository.save(usuario);
+			return ResponseEntity.created(uri).body(new UsuarioDto(usuario));
+		}
+		return ResponseEntity.badRequest().build();
+
 	}
-	
 
 	@PutMapping("/{id}")
 	@Transactional
-	public ResponseEntity<UsuarioDto> atualizar(@PathVariable Integer id,@RequestBody UsuarioForm form){
-		
+	public ResponseEntity<UsuarioDto> atualizar(@PathVariable Integer id, @RequestBody @Valid UsuarioForm form) {
 
-		Optional<Usuario> optional = usuariorepository.findById(id);
-		
+		Optional<Usuario> optional = usuarioRepository.findById(id);
+
 		if (optional.isPresent()) {
-		   Usuario usuario = form.atualizar(id,usuariorepository);
-		    return ResponseEntity.ok(new UsuarioDto(usuario));
-		
-			
-		}else {
-			
+			Usuario usuario = form.atualizar(id, usuarioRepository);
+			return ResponseEntity.ok(new UsuarioDto(usuario));
+
+		} else {
+
 			return ResponseEntity.notFound().build();
 		}
-		
-		
+
 	}
+
 	@DeleteMapping("/{id}")
 	@Transactional
-	public ResponseEntity<?> remover(@PathVariable Integer id){
+	public ResponseEntity<?> remover(@PathVariable Integer id) {
 
-		Optional<Usuario> optional = usuariorepository.findById(id);
-		
+		Optional<Usuario> optional = usuarioRepository.findById(id);
+
 		if (optional.isPresent()) {
-		usuariorepository.deleteById(id);
-		return ResponseEntity.ok().build();
-			
-		}else {
-			
+			usuarioRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+
+		} else {
+
 			return ResponseEntity.notFound().build();
 		}
-		
+
 	}
 }

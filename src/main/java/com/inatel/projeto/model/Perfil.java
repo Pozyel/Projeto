@@ -10,13 +10,12 @@ import org.springframework.security.core.GrantedAuthority;
 @Entity
 public class Perfil implements GrantedAuthority {
 
-
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer idUsuario;
-	
+
 	private String autoridade;
 
 	public Integer getIdUsuario() {
@@ -40,6 +39,5 @@ public class Perfil implements GrantedAuthority {
 		// TODO Auto-generated method stub
 		return this.autoridade;
 	}
-	
-	
+
 }

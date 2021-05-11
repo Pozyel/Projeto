@@ -1,10 +1,13 @@
 package com.inatel.projeto.controller.form;
 
+import javax.validation.constraints.NotNull;
+
 import com.inatel.projeto.model.Promocao;
 import com.inatel.projeto.repository.PromocaoRepository;
 
 public class AtualizaPromocaoForm {
 
+	@NotNull
 	private Double precoPromocao;
 
 	public Double getPrecoPromocao() {
@@ -20,6 +23,5 @@ public class AtualizaPromocaoForm {
 		promocao.setNew_price(this.precoPromocao);
 		return promocao;
 	}
-	
-	
+
 }

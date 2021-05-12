@@ -3,6 +3,7 @@ package com.inatel.projeto.config.security;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +13,7 @@ import com.inatel.projeto.model.Usuario;
 import com.inatel.projeto.repository.UsuarioRepository;
 
 @Service
+
 public class AutenticacaoService implements UserDetailsService {
 
 	@Autowired

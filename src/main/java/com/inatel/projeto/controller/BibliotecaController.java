@@ -1,6 +1,9 @@
 package com.inatel.projeto.controller;
 
 import java.net.URI;
+import java.util.Optional;
+
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -11,7 +14,9 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,6 +63,25 @@ public class BibliotecaController {
 
 		Page<Biblioteca> biblioteca = bibliotecaRepository.findByUsuarioNome(nomeUsuario, paginacao);
 		return BibliotecaDto.converter(biblioteca);
+
+	}
+	
+	@DeleteMapping("/{id}")
+	@Transactional
+	@CacheEvict(value = "listaDeBiblioteca", allEntries = true)
+	public ResponseEntity<?> remover(@PathVariable Integer id) {
+
+		Optional<Biblioteca> optional = bibliotecaRepository.findById(id);
+
+		if (optional.isPresent()) {
+
+			bibliotecaRepository.deleteById(id);
+			return ResponseEntity.ok().build();
+
+		} else {
+
+			return ResponseEntity.notFound().build();
+		}
 
 	}
 
